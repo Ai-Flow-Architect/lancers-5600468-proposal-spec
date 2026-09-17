@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ja">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>医療用品ECサイト構築のご提案｜AIフローアーキテクト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+
+<style>
+  /* 3枚共通の見た目。ここが唯一の正本＝ページ側に個別CSSを書かない */
+  :root{
+    --bg:#0A0E16;
+    --panel:#111825;
+    --line:#2A3446;
+    --gold:#D4AF37;
+    --gold-dim:#8C7526;
+    --text:#F2F4F7;
+    --muted:#9AA7B4;
+    --warn:#E0724A;
+    --ok:#5FB894;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+    font-size:18px;
+    line-height:1.95;
+    padding:clamp(1.5rem,4vw,3.5rem) clamp(1rem,3vw,2rem) clamp(4rem,8vw,7rem);
+    background-image:
+      radial-gradient(1200px 600px at 8% -5%, rgba(212,175,55,.10), transparent 60%),
+      radial-gradient(900px 500px at 100% 105%, rgba(212,175,55,.07), transparent 60%);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(3rem,6vw,5rem);}
+
+  header{display:flex;flex-direction:column;gap:.75rem;padding-bottom:1.75rem;border-bottom:1px solid var(--line);}
+  .eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.24em;color:var(--gold);}
+  h1{font-size:clamp(2.2rem,6vw,3.4rem);font-weight:900;line-height:1.25;margin:0;letter-spacing:.01em;text-wrap:balance;}
+  /* 題名の左に置く印（金の線画・実在の道具ではないのでロゴは使わない） */
+  h1{display:flex;align-items:center;gap:.7rem;}
+  h1 .t-icon{width:1em;height:1em;flex:none;stroke:var(--gold);fill:none;stroke-width:1.7;
+    stroke-linecap:round;stroke-linejoin:round;}
+  .lede{margin:0;color:var(--muted);font-size:clamp(1rem,2.2vw,1.15rem);max-width:44rem;}
+
+  section{display:flex;flex-direction:column;gap:1.4rem;}
+  h2{
+    margin:0;font-size:clamp(1.5rem,3.6vw,2rem);font-weight:700;line-height:1.5;
+    /* 題名が2行になっても番号は1行目の高さに置く（中央寄せだと浮いて見にくい） */
+    display:flex;align-items:flex-start;gap:.9rem;flex-wrap:wrap;
+    text-wrap:balance;line-break:strict;word-break:normal;overflow-wrap:normal;
+  }
+  /* 番号は題名と同じ大きさ・同じ行の高さにする＝ズレる余地をなくす
+     （小さい文字を後から位置合わせすると、行の高さの差だけ必ず浮く） */
+  h2 .step{font-size:inherit;line-height:inherit;margin-top:0;align-self:auto;}
+  /* 題名の中で「ここで折る」と決めた位置。それ以外では折らない */
+  h2 .nb{white-space:nowrap;}
+  /* 章の番号＝枠で囲わず数字そのもので示す（目次の①〜④と同じ見え方に揃える） */
+  .step{
+    font-size:1.5rem;font-weight:700;letter-spacing:0;color:var(--gold);
+    border:none;padding:0;white-space:nowrap;line-height:1;
+  }
+  h3{margin:0;font-size:1.15rem;font-weight:700;letter-spacing:.06em;color:var(--gold);}
+
+  .figure{
+    background:linear-gradient(160deg,#0D131E 0%,#161D2B 100%);
+    border:1px solid var(--line);border-radius:6px;
+    padding:clamp(1rem,2.5vw,2rem);overflow-x:auto;
+  }
+  .svg-holder{width:80%;margin:0 auto;min-width:640px;}
+  @media (max-width:900px){ .svg-holder{width:100%;min-width:600px;} }
+  .figure svg{width:100%;height:auto;display:block;}
+
+  .hint{display:flex;align-items:center;gap:.5rem;color:var(--muted);font-size:.88rem;margin:0 0 .9rem;}
+  .hint svg{width:1.05rem;height:1.05rem;flex:none;}
+
+  .node{cursor:help;}
+  .node rect.box{transition:stroke .15s ease, filter .15s ease;}
+  .node:hover rect.box, .node:focus-visible rect.box{
+    stroke:#F0D77A;filter:drop-shadow(0 0 10px rgba(212,175,55,.45));
+  }
+  .node:focus{outline:none;}
+  .node:focus-visible rect.box{stroke-width:3.5;}
+
+  #tip{
+    position:fixed;z-index:50;max-width:24rem;
+    background:#0B111B;border:1px solid var(--gold-dim);border-radius:4px;
+    padding:.85rem 1rem;font-size:.95rem;line-height:1.8;color:var(--text);
+    box-shadow:0 12px 30px rgba(0,0,0,.6);
+    opacity:0;visibility:hidden;transition:opacity .12s ease;pointer-events:none;
+  }
+  #tip.on{opacity:1;visibility:visible;}
+  #tip .tip-name{display:block;color:var(--gold);font-weight:700;font-size:.85rem;letter-spacing:.08em;margin-bottom:.3rem;}
+
+  .reading{
+    background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:3px;padding:1.4rem clamp(1.2rem,3vw,1.8rem);
+    display:flex;flex-direction:column;gap:1rem;
+  }
+  .reading ul{margin:0;padding-left:1.3rem;display:flex;flex-direction:column;gap:.7rem;}
+  .reading li::marker{color:var(--gold);}
+  .reading p{margin:0;}
+  b{font-weight:700;color:#FFFFFF;}
+
+  .caution{border-left-color:var(--warn);}
+  .caution h3{color:var(--warn);}
+  .tag{display:inline-block;background:rgba(224,114,74,.14);color:var(--warn);
+    font-size:.8rem;font-weight:700;padding:.15rem .6rem;border-radius:2px;margin-right:.45rem;}
+
+  /* 目次＝冒頭に置く章の一覧 */
+  .toc{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);
+    border-radius:3px;padding:1.2rem clamp(1.2rem,3vw,1.6rem);
+    display:flex;flex-direction:column;gap:.55rem;}
+  .toc h3{margin-bottom:.5rem;}
+  /* 折り返しても2行目が番号の下へ潜らないよう、本文の左端で揃える */
+  .toc a{display:flex;gap:.7rem;align-items:flex-start;color:var(--text);text-decoration:none;
+    font-size:1rem;line-height:1.8;border-bottom:1px solid transparent;
+    line-break:strict;word-break:normal;overflow-wrap:normal;}
+  .toc a:hover,.toc a:focus-visible{color:var(--gold);border-bottom-color:var(--gold-dim);}
+  .toc .no{color:var(--gold);font-weight:700;flex:none;min-width:1.6em;}
+  .toc .nb{white-space:nowrap;}
+
+  /* 出典＝題名の直下。ラベルと出典を縦に積み、URLの途中では折らない */
+  .src{margin:0;font-size:.9rem;line-height:1.9;color:var(--muted);
+    display:flex;flex-wrap:wrap;gap:.15rem .9rem;align-items:baseline;
+    line-break:strict;word-break:normal;overflow-wrap:normal;}
+  .src .no{color:var(--gold);font-weight:700;flex:none;}
+  .src .lbl{color:var(--text);font-weight:700;white-space:nowrap;}
+  .src a{color:var(--gold);white-space:nowrap;}
+
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;}
+  table{border-collapse:collapse;width:100%;font-size:1rem;min-width:520px;}
+  th,td{text-align:left;padding:1rem 1.1rem;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  th{text-align:center;font-size:1rem;letter-spacing:.06em;color:var(--gold);font-weight:700;
+    white-space:nowrap;background:rgba(212,175,55,.05);}
+  td{text-align:left;}
+  td:first-child{font-weight:700;white-space:nowrap;color:#FFFFFF;}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap;}
+  /* 表の中のリンク（別紙へ飛ぶ） */
+  td a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim);}
+  td a:hover,td a:focus-visible{border-bottom-color:var(--gold);}
+  .up{color:var(--ok);font-weight:700;}
+  .down{color:var(--warn);font-weight:700;}
+  .flat{color:var(--muted);}
+
+  footer{border-top:1px solid var(--line);padding-top:1.4rem;color:var(--muted);font-size:.9rem;
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  .brand{color:var(--text);font-weight:700;letter-spacing:.12em;}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+
+  .tree{background:#0B111B;border:1px solid var(--line);border-radius:4px;
+    padding:clamp(1rem,2.5vw,1.6rem);overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.92rem;line-height:1.95;color:#C7D0DA;white-space:pre;}
+  .tree b{color:#D4AF37;font-weight:700;}
+  .tree i{color:var(--muted);font-style:normal;}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+  @media (max-width:820px){ .two{grid-template-columns:1fr;} }
+  .two .reading{gap:.7rem;}
+  .win{color:var(--gold);font-weight:700;text-align:center;margin:.2rem 0;}
+  /* 表の中に置く道具の印＝実在する道具は白タイル＋公式ロゴ（手写ししない） */
+  .tlogo{display:inline-flex;align-items:center;justify-content:center;
+    width:1.5em;height:1.5em;border-radius:.28em;background:#EEF2F6;
+    vertical-align:-.38em;margin-right:.45em;flex:none;}
+  .tlogo svg{width:1.05em;height:1.05em;display:block;}
+  /* 道具でないもの（場所・守り・作業）の印＝金の線画。ロゴは使わない */
+  .tline{display:inline-flex;align-items:center;justify-content:center;
+    width:1.5em;height:1.5em;vertical-align:-.38em;margin-right:.45em;flex:none;}
+  .tline svg{width:1.35em;height:1.35em;display:block;stroke:var(--gold);fill:none;
+    stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+</style>
+
+<div id="tip" role="tooltip"></div>
+
+
+<!--
+  10万円以上のPF案件向け 提案書テンプレ（骨格のみ）
+  🔴 差し込み欄を1つでも残したまま公開しない（build_check.py が止めます）
+  🔴 図の箱の中の文字は「題名＋補足1行」の2行まで。3行目は必ずホバー説明(data-tip)へ逃がす
+  🔴 実績は track_record.py --show の台帳にあるものだけ。単価は推測で書かない
+-->
+
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">Lancers 5600468 ご提案</span>
+    <h1><svg class="t-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>医療用品ECサイト構築のご提案</h1>
+    <p class="lede">ご依頼文の4つの記載事項と、「一緒に考えてほしい」5点に1枚でお答えします。</p>
+  </header>
+
+  <nav class="toc" aria-label="目次">
+    <h3>目次</h3>
+    <a href="#ch1"><span class="no">&#9312;</span><span>ご依頼の4点への回答</span></a>
+    <a href="#ch2"><span class="no">&#9313;</span><span>どう動かすか</span></a>
+    <a href="#ch3"><span class="no">&#9314;</span><span>350,000円の中身</span></a>
+    <a href="#ch4"><span class="no">&#9315;</span><span>納期とお約束</span></a>
+  </nav>
+
+  <!-- ① 依頼文が求めている項目に、1項目1〜2行で答える。詳細は図へ逃がす -->
+  <section id="ch1">
+    <h2><span class="step">&#9312;</span>ご依頼の4点への回答</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ご依頼の記載事項</th><th>回答</th></tr></thead>
+        <tbody>
+          <tr><td>1. 簡単な自己紹介</td><td>AIフローアーキテクトです。Webサイト・Webサービスの構築と業務の自動化を、1名で担当しています。</td></tr>
+          <tr><td>2. これまでの制作実績</td><td>Shopifyでのネットショップ構築は複数件。ほかに、決済連携のあるWebサービス（約100万円規模・今も継続してご依頼中）、士業様の15ページ規模のサイト（約50万円規模）を構築しました。</td></tr>
+          <tr><td>3. 医療用品／医療関連ECの制作経験</td><td>ございません。代わりに、制作前に確認すべき点（販売の許可・届出の要否、効能の書き方）をリストにしてお渡しします。</td></tr>
+          <tr><td>4. 公開可能な制作実績URL</td><td>守秘義務のため、公開できるURLはございません。</td></tr>
+          <tr><td>5. 納期・修正対応</td><td>約6週間。<b>毎週、動くものをお見せします。</b></td></tr>
+          <tr><td>6. 再委託の有無</td><td><b>ありません。</b>当方1名で担当します。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="reading caution">
+      <h3><span class="tag">先に確認</span>作り始める前に確かめたい点</h3>
+      <p>
+        Shopify標準のカード決済は、規制のある医療機器などで<b>事前審査が要る、または使えない場合</b>があります。<br>
+        第1〜2週で商品ごとに確かめ、通らなければ外部の決済に切り替えます。
+      </p>
+    </div>
+  </section>
+
+  <!-- ② 図1＝全体の流れ（8箱・左上から右下へ蛇行）／図2＝2つの案を比べて決める -->
+  <section id="ch2">
+    <h2><span class="step">&#9313;</span>どう動かすか</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ご依頼文の問い</th><th>当方の答え</th></tr></thead>
+        <tbody>
+          <tr><td>商品を探しやすいか</td><td>カテゴリと絞り込み検索を、数百点を前提に設計します。</td></tr>
+          <tr><td>迷わず購入まで進めるか</td><td>スマートフォンで購入の流れを試験してから公開します。</td></tr>
+          <tr><td>管理者が運用しやすいか</td><td>管理画面と表の一括更新を使い、操作手順書をお渡しします。</td></tr>
+          <tr><td>商品数が増えても大丈夫か</td><td>一括登録の型と分類を、増える前提で作ります。</td></tr>
+          <tr><td>将来の機能追加に対応できるか</td><td>初期リリースの後、段階ごとにお見積りします。</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" aria-hidden="true">
+        <path d="M5 3l10 9-4.5 1.5L13 19l-2.5 1-2.5-5.5L5 18z" stroke-linejoin="round"/>
+      </svg>
+      箱にマウスを合わせる（スマートフォンは指で押す）と、補足が出ます。
+    </p>
+
+    <h3>図1　全体の流れ</h3>
+    <div class="figure">
+      <div class="svg-holder">
+        <svg viewBox="0 0 1600 840" role="img" aria-label="ご依頼内容から、決済の確認、表示の確認リスト、分類の設計、デザイン、商品の一括登録、御社のご確認を経て公開するまでの流れ">
+          <defs>
+            <marker id="f1a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
+            </marker>
+          </defs>
+
+          <!-- 上段4箱: x=60 / 460 / 860 / 1260、y=140、w=330 h=170 -->
+          <g class="node" tabindex="0" data-name="ご依頼内容" data-tip="新規のECサイト。数百点の商品を探しやすく、スマートフォンから購入でき、管理者が商品・在庫・注文を簡単に扱えること。">
+            <rect class="box" x="60" y="140" width="330" height="170" rx="10" fill="#111825" stroke="#4A586B" stroke-width="2"/>
+            <text x="90" y="212" fill="#F2F4F7" font-size="30" font-weight="700">ご依頼内容</text>
+            <text x="90" y="262" fill="#C3CDD9" font-size="26">医療用品を数百点</text>
+          </g>
+          <g class="node" tabindex="0" data-name="決済の確認" data-tip="Shopify標準のカード決済は、規制のある医療機器などで事前審査が要る、または使えない場合があります。作り始める前に商品の種類ごとに確かめます。">
+            <rect class="box" x="460" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="490" y="212" fill="#F2F4F7" font-size="30" font-weight="700">① 決済の確認</text>
+            <text x="490" y="262" fill="#C3CDD9" font-size="26">商品ごとに先に</text>
+          </g>
+          <g class="node" tabindex="0" data-name="表示の確認リスト" data-tip="販売の許可・届出の要否（高度管理医療機器は許可、管理医療機器は届出）、商品説明の効能の書き方など、制作前に確認すべき点を一覧にしてお渡しします。ご判断は御社です。">
+            <rect class="box" x="860" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="890" y="212" fill="#F2F4F7" font-size="30" font-weight="700">② 確認リスト</text>
+            <text x="890" y="262" fill="#C3CDD9" font-size="26">許可・届出・表現</text>
+          </g>
+          <g class="node" tabindex="0" data-name="分類の設計" data-tip="カテゴリと絞り込み（用途・サイズなど）を、商品が増えても崩れない形で設計します。">
+            <rect class="box" x="1260" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="1290" y="212" fill="#F2F4F7" font-size="30" font-weight="700">③ 分類の設計</text>
+            <text x="1290" y="262" fill="#C3CDD9" font-size="26">探しやすい分類</text>
+          </g>
+
+          <!-- 下段4箱: y=560。人が見る場所（人の判断が残る箱）だけ stroke を #5FB894 にする -->
+          <g class="node" tabindex="0" data-name="デザイン" data-tip="清潔感・信頼感を保ちつつ、堅くなりすぎないデザイン。スマートフォンで商品を確認しやすい配置にします。">
+            <rect class="box" x="60" y="560" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="90" y="632" fill="#F2F4F7" font-size="30" font-weight="700">④ デザイン</text>
+            <text x="90" y="682" fill="#C3CDD9" font-size="26">清潔感・スマホ</text>
+          </g>
+          <g class="node" tabindex="0" data-name="商品の一括登録" data-tip="商品を表（CSV）で一括登録・一括更新できる仕組みを作り、ご用意いただいた商品データを登録します。価格変更も表で行えます。">
+            <rect class="box" x="460" y="560" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="490" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑤ 一括登録</text>
+            <text x="490" y="682" fill="#C3CDD9" font-size="26">表で数百点</text>
+          </g>
+          <g class="node" tabindex="0" data-name="御社のご確認" data-tip="商品情報・表示内容の最終判断は御社にお願いします。当方は確認リストで判断材料を揃えます。">
+            <rect class="box" x="860" y="560" width="330" height="170" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
+            <text x="890" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑥ 御社の確認</text>
+            <text x="890" y="682" fill="#C3CDD9" font-size="26">表示の最終判断</text>
+          </g>
+          <g class="node" tabindex="0" data-name="公開と運用" data-tip="公開後1か月は不具合対応と操作のご質問に対応します。商品追加・価格変更・在庫・注文の操作手順書をお渡しします。">
+            <rect class="box" x="1260" y="560" width="330" height="170" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
+            <text x="1290" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑦ 公開と運用</text>
+            <text x="1290" y="682" fill="#C3CDD9" font-size="26">手順書つき</text>
+          </g>
+
+          <path d="M394,225 L450,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M794,225 L850,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1194,225 L1250,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1425,314 L1425,420 L225,420 L225,548" fill="none" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M394,645 L450,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M794,645 L850,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1194,645 L1250,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+
+          <!-- 注記は、説明したい箱の直下に置く（離すと対応が読み取れない） -->
+          <text x="490" y="352" fill="#9AA7B4" font-size="24">※ 審査に通らない商品は、外部の決済サービスに切り替えます</text>
+          <text x="860" y="778" fill="#5FB894" font-size="24">緑の枠＝人が見る場所。判断は御社に残ります。</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3>図2　作り方を2つの案で比べて決めます</h3>
+    <div class="figure">
+      <div class="svg-holder">
+        <svg viewBox="0 0 1600 640" role="img" aria-label="運用のしやすさと将来の広がりの2点で、Shopifyで整える案と一から作る案を比べ、決済の確認結果で決める図">
+          <defs>
+            <marker id="f2a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
+            </marker>
+            <marker id="f2b" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L9,4 L0,8 Z" fill="#6C7A8C"/>
+            </marker>
+          </defs>
+
+          <g class="node" tabindex="0" data-name="運用のしやすさ" data-tip="ご依頼文の「管理者側でできるだけ簡単に行える仕組み」への答えです。">
+            <rect class="box" x="60" y="70" width="420" height="200" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
+            <text x="90" y="128" fill="#D4AF37" font-size="27" font-weight="700">運用のしやすさ</text>
+            <text x="90" y="176" fill="#F2F4F7" font-size="24">商品・在庫・注文を</text>
+            <text x="90" y="214" fill="#F2F4F7" font-size="24">管理画面で簡単に</text>
+          </g>
+          <g class="node" tabindex="0" data-name="将来の広がり" data-tip="ご依頼文の「将来的な商品数の増加」「段階的な開発」への答えです。">
+            <rect class="box" x="60" y="350" width="420" height="200" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
+            <text x="90" y="408" fill="#D4AF37" font-size="27" font-weight="700">将来の広がり</text>
+            <text x="90" y="456" fill="#F2F4F7" font-size="24">商品数の増加</text>
+            <text x="90" y="494" fill="#F2F4F7" font-size="24">段階的な機能追加</text>
+          </g>
+          <g class="node" tabindex="0" data-name="Shopifyで整える" data-tip="在庫・注文・商品管理の画面が最初からあり、費用と期間を抑えられます。利用料は月3,650円から（年払い）。">
+            <rect class="box" x="620" y="70" width="380" height="200" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="650" y="128" fill="#F2F4F7" font-size="27" font-weight="700">Shopifyで整える</text>
+            <text x="650" y="166" fill="#C3CDD9" font-size="24">既製の仕組みを活用</text>
+            <text x="650" y="220" fill="#5FB894" font-size="24">管理画面が完成済み</text>
+          </g>
+          <g class="node" tabindex="0" data-name="一から作る" data-tip="画面や機能を自由に作れますが、管理画面から作るため費用と期間が大きくなります。">
+            <rect class="box" x="620" y="350" width="380" height="200" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="650" y="408" fill="#F2F4F7" font-size="27" font-weight="700">一から作る</text>
+            <text x="650" y="446" fill="#C3CDD9" font-size="24">Webサービスとして自作</text>
+            <text x="650" y="500" fill="#F2F4F7" font-size="24">自由度は高いが費用増</text>
+          </g>
+          <g class="node" tabindex="0" data-name="決め方" data-tip="決済の審査で使えない商品が多い場合は、外部決済の組み合わせか、一から作る案を改めてご相談します。">
+            <rect class="box" x="1120" y="180" width="430" height="280" rx="10" fill="rgba(212,175,55,.06)" stroke="#D4AF37" stroke-width="2.5"/>
+            <text x="1150" y="248" fill="#D4AF37" font-size="27" font-weight="700">初回はShopifyを推奨</text>
+            <text x="1150" y="308" fill="#F2F4F7" font-size="24">決済の確認結果を見て</text>
+            <text x="1150" y="346" fill="#F2F4F7" font-size="24">御社と一緒に確定</text>
+            <text x="1150" y="400" fill="#C3CDD9" font-size="24">第1〜2週で確定</text>
+          </g>
+
+          <path d="M486,155 L610,155" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M486,465 L610,465" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M486,225 L610,400" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
+          <path d="M486,400 L610,225" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
+          <path d="M1006,180 L1110,262" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M1006,440 L1110,380" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <text x="60" y="610" fill="#9AA7B4" font-size="24">点線＝比較のために、もう一方の案にも当てて確かめます</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 図3＝入る／難しい／別途 の3層。ここが194件の中での差別化になる -->
+  <section id="ch3">
+    <h2><span class="step">&#9314;</span>350,000円の中身</h2>
+
+    <h3>図3　入る／難しい／別途</h3>
+    <div class="figure">
+      <div class="svg-holder">
+        <svg viewBox="0 0 1600 660" role="img" aria-label="350,000円で入る範囲、実測が必要な難しい範囲、別途になる範囲の3層を示した図">
+          <g class="node" tabindex="0" data-name="入る範囲（350,000円）" data-tip="決済の確認と設定／表示の確認リスト／カテゴリと絞り込み検索の設計／清潔感のあるデザイン（スマホ対応）／商品の一括登録の仕組みと、ご用意いただいた商品データの登録／特定商取引法・プライバシーポリシー等のページ枠／操作手順書／公開後1か月の不具合対応とご質問対応">
+            <rect class="box" x="60" y="50" width="1480" height="180" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="3"/>
+            <text x="100" y="118" fill="#D4AF37" font-size="32" font-weight="700">入る範囲</text>
+            <text x="100" y="172" fill="#F2F4F7" font-size="24">決済の確認／確認リスト／カテゴリと絞り込み検索／デザイン</text>
+            <text x="100" y="208" fill="#F2F4F7" font-size="24">商品の一括登録と数百点の登録／操作手順書／公開後1か月の対応</text>
+            <text x="1210" y="118" fill="#D4AF37" font-size="28" font-weight="700">350,000円</text>
+            <text x="1140" y="208" fill="#5FB894" font-size="24">ご満足いただけなければ全額返金</text>
+          </g>
+          <g class="node" tabindex="0" data-name="難しい範囲" data-tip="決済の審査は決済会社が、表示内容の法的なご判断は御社（必要に応じて専門家）が行うため、当方だけでは確定できません。当方は確認すべき点を制作前に漏れなく並べます。">
+            <rect class="box" x="60" y="270" width="1480" height="160" rx="10" fill="rgba(224,114,74,.08)" stroke="#E0724A" stroke-width="3"/>
+            <text x="100" y="338" fill="#E0724A" font-size="32" font-weight="700">難しい範囲</text>
+            <text x="100" y="392" fill="#F2F4F7" font-size="24">決済審査の結果（決済会社が判断）／表示内容の法的な最終判断</text>
+            <text x="1090" y="338" fill="#E0724A" font-size="24" font-weight="700">制作前に確認リストで共有</text>
+          </g>
+          <g class="node" tabindex="0" data-name="別途になる範囲" data-tip="撮影・原稿・広告・2か月目以降の保守はご相談のうえお見積りします。許可・届出の申請は制作側の対象外です。">
+            <rect class="box" x="60" y="470" width="1480" height="150" rx="10" fill="#111825" stroke="#4A586B" stroke-width="2.5"/>
+            <text x="100" y="522" fill="#9AA7B4" font-size="32" font-weight="700">別途になる範囲</text>
+            <text x="100" y="564" fill="#F2F4F7" font-size="24">商品写真の撮影／商品説明文の作成／広告運用／2か月目以降の保守</text>
+            <text x="100" y="600" fill="#9AA7B4" font-size="24">販売の許可・届出の申請手続き</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="reading caution">
+      <h3><span class="tag">費用</span>月々の費用（御社のご負担）</h3>
+      <p>
+        Shopifyの利用料は御社のご契約です（Basic：年払い 月3,650円／月払い 月4,850円・カード手数料は公式料金ページのとおり）。<br>
+        <b>外部の決済サービスを使う場合の手数料は、決済の確認後に数字でお伝えします。</b>
+      </p>
+    </div>
+  </section>
+
+  <!-- ④ 図4＝進行と、途中で降りられる判断点。表は4行まで -->
+  <section id="ch4">
+    <h2><span class="step">&#9315;</span>納期とお約束</h2>
+
+    <h3>図4　約6週間の進み方</h3>
+    <div class="figure">
+      <div class="svg-holder">
+        <svg viewBox="0 0 1600 480" role="img" aria-label="約6週間を3つに分け、最初の区切りで一度判断いただけることを示した図">
+          <defs>
+            <marker id="f4a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+              <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
+            </marker>
+          </defs>
+          <g class="node" tabindex="0" data-name="第1〜2週" data-tip="決済の確認結果と、分類・画面の設計をお見せします。">
+            <rect class="box" x="60" y="90" width="480" height="170" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="2.5"/>
+            <text x="90" y="152" fill="#D4AF37" font-size="27" font-weight="700">第1〜2週</text>
+            <text x="90" y="200" fill="#F2F4F7" font-size="24">決済の確認・分類の設計</text>
+          </g>
+          <g class="node" tabindex="0" data-name="第3〜4週" data-tip="デザインを作り、商品データを一括登録します。">
+            <rect class="box" x="560" y="90" width="480" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="590" y="152" fill="#F2F4F7" font-size="27" font-weight="700">第3〜4週</text>
+            <text x="590" y="200" fill="#F2F4F7" font-size="24">デザイン・一括登録</text>
+          </g>
+          <g class="node" tabindex="0" data-name="第5〜6週" data-tip="購入の流れを試験し、公開して操作手順書をお渡しします。">
+            <rect class="box" x="1060" y="90" width="480" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <text x="1090" y="152" fill="#F2F4F7" font-size="27" font-weight="700">第5〜6週</text>
+            <text x="1090" y="200" fill="#F2F4F7" font-size="24">試験・公開・手順書</text>
+          </g>
+
+          <path d="M544,175 L552,175" stroke="#D4AF37" stroke-width="3" marker-end="url(#f4a)"/>
+          <path d="M1044,175 L1052,175" stroke="#D4AF37" stroke-width="3" marker-end="url(#f4a)"/>
+
+          <path d="M300,268 L300,300" stroke="#5FB894" stroke-width="3"/>
+          <path d="M288,300 L312,300 L300,322 Z" fill="#5FB894"/>
+          <text x="90" y="378" fill="#5FB894" font-size="24" font-weight="700">ここで一度ご判断いただけます</text>
+          <text x="90" y="420" fill="#F2F4F7" font-size="24">決済の確認と設計をご覧いただき、ここでお止めいただく場合は全額返金いたします。</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>項目</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td>進め方</td><td><b>毎週、動くものをお見せします。</b></td></tr>
+          <tr><td>修正対応</td><td>検収期間中の不具合修正は無償です。仕様の変更・追加は別途お見積りします。</td></tr>
+          <tr><td>秘密保持</td><td>お預かりする商品データと管理画面の権限は、本件以外に使いません。ご希望があれば秘密保持契約を結びます。</td></tr>
+          <tr><td>引渡し</td><td>公開済みのショップ一式（御社名義のアカウント）／一括登録用の表の型／操作手順書／確認リスト</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reading">
+      <h3>次にお願いしたいこと</h3>
+      <p>
+        ご検討の中で決め手になっている箇所を、一言お聞かせいただけますでしょうか。<br>
+        <b>金額</b>であれば、範囲を絞ったお見積りをお出しします。<br>
+        <b>進め方や納期</b>であれば、仮のスケジュールを作成いたします（無償）。
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span class="brand">AIフローアーキテクト</span>
+    <span>Lancers 依頼番号 5600468 へのご提案</span>
+  </footer>
+
+</div>
+
+<script>
+/* 3枚共通のホバー解説。ここが唯一の正本＝ページ側に個別スクリプトを書かない */
+(function(){
+  var tip = document.getElementById('tip');
+  var current = null;
+
+  function show(el){
+    var name = el.getAttribute('data-name') || '';
+    var body = el.getAttribute('data-tip') || '';
+    if(!body) return;
+    tip.innerHTML = '';
+    if(name){
+      var n = document.createElement('span');
+      n.className = 'tip-name';
+      n.textContent = name;
+      tip.appendChild(n);
+    }
+    tip.appendChild(document.createTextNode(body));
+    tip.classList.add('on');
+    position(el);
+    current = el;
+  }
+
+  function position(el){
+    var r = el.getBoundingClientRect();
+    var t = tip.getBoundingClientRect();
+    var pad = 12;
+    var left = r.left + r.width/2 - t.width/2;
+    left = Math.max(pad, Math.min(left, window.innerWidth - t.width - pad));
+    var top = r.top - t.height - pad;
+    if(top < pad) top = r.bottom + pad;
+    if(top + t.height > window.innerHeight - pad){
+      top = Math.max(pad, window.innerHeight - t.height - pad);
+    }
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+
+  function hide(){ tip.classList.remove('on'); current = null; }
+
+  var nodes = document.querySelectorAll('.node');
+  for(var i=0;i<nodes.length;i++){
+    (function(el){
+      el.addEventListener('mouseenter', function(){ show(el); });
+      el.addEventListener('mouseleave', hide);
+      el.addEventListener('focus', function(){ show(el); });
+      el.addEventListener('blur', hide);
+      el.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(current === el){ hide(); } else { show(el); }
+      });
+    })(nodes[i]);
+  }
+
+  document.addEventListener('click', hide);
+  window.addEventListener('scroll', function(){ if(current) position(current); }, {passive:true});
+  window.addEventListener('resize', function(){ if(current) position(current); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') hide(); });
+})();
+</script>
+
