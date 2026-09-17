@@ -181,8 +181,13 @@
 <!--
   10万円以上のPF案件向け 提案書テンプレ（骨格のみ）
   🔴 差し込み欄を1つでも残したまま公開しない（build_check.py が止めます）
+     ※ このコメントに差し込み欄の記号そのものを書くと、全案件で「差し替え忘れ」と判定される（2026-09-17 実測）
+  🔴 図の箱には必ず印を1つ（G1）。実在する道具は marks.logo("slug")、それ以外は marks.line("名前")（marks.py）
+     道具名を箱の文字に出したら、その箱は公式ロゴにする（G2）
   🔴 図の箱の中の文字は「題名＋補足1行」の2行まで。3行目は必ずホバー説明(data-tip)へ逃がす
   🔴 実績は track_record.py --show の台帳にあるものだけ。単価は推測で書かない
+  🔴 書く前に LESSONS.md を全部読む（禁止表現は G3 が止めます）
+  座標は 2026-09-16 公開の実物（全箱に印あり・箱の高さ230）から写したもの。触らない
 -->
 
 <div class="wrap">
@@ -212,7 +217,7 @@
           <tr><td>2. これまでの制作実績</td><td>Shopifyでのネットショップ構築は複数件。ほかに、決済連携のあるWebサービス（約100万円規模・今も継続してご依頼中）、士業様の15ページ規模のサイト（約50万円規模）を構築しました。</td></tr>
           <tr><td>3. 医療用品／医療関連ECの制作経験</td><td>ございません。代わりに、制作前に確認すべき点（販売の許可・届出の要否、効能の書き方）をリストにしてお渡しします。</td></tr>
           <tr><td>4. 公開可能な制作実績URL</td><td>守秘義務のため、公開できるURLはございません。</td></tr>
-          <tr><td>5. 納期・修正対応</td><td>約6週間。<b>毎週、動くものをお見せします。</b></td></tr>
+          <tr><td>5. 納期</td><td>約6週間。第2週・第4週・第6週に画面をお見せし、その都度ご確認いただきます（下の「途中の確認」）。</td></tr>
           <tr><td>6. 再委託の有無</td><td><b>ありません。</b>当方1名で担当します。</td></tr>
         </tbody>
       </table>
@@ -221,7 +226,7 @@
       <h3><span class="tag">先に確認</span>作り始める前に確かめたい点</h3>
       <p>
         Shopify標準のカード決済は、規制のある医療機器などで<b>事前審査が要る、または使えない場合</b>があります。<br>
-        第1〜2週で商品ごとに確かめ、通らなければ外部の決済に切り替えます。
+        第2週までに商品ごとに確かめ、通らなければ外部の決済に切り替えます。
       </p>
     </div>
   </section>
@@ -253,68 +258,76 @@
     <h3>図1　全体の流れ</h3>
     <div class="figure">
       <div class="svg-holder">
-        <svg viewBox="0 0 1600 840" role="img" aria-label="ご依頼内容から、決済の確認、表示の確認リスト、分類の設計、デザイン、商品の一括登録、御社のご確認を経て公開するまでの流れ">
+        <svg viewBox="0 0 1600 1020" role="img" aria-label="ご依頼内容から、決済の確認、表示の確認リスト、分類の設計、デザイン、商品の一括登録、御社のご確認を経て公開するまでの流れ">
           <defs>
             <marker id="f1a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
               <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
             </marker>
           </defs>
 
-          <!-- 上段4箱: x=60 / 460 / 860 / 1260、y=140、w=330 h=170 -->
+          <!-- 上段4箱: x=60/460/860/1260、y=140、w=330 h=230。印は左上(x+26,y+20)、題名 y+152、補足 y+196 -->
           <g class="node" tabindex="0" data-name="ご依頼内容" data-tip="新規のECサイト。数百点の商品を探しやすく、スマートフォンから購入でき、管理者が商品・在庫・注文を簡単に扱えること。">
-            <rect class="box" x="60" y="140" width="330" height="170" rx="10" fill="#111825" stroke="#4A586B" stroke-width="2"/>
-            <text x="90" y="212" fill="#F2F4F7" font-size="30" font-weight="700">ご依頼内容</text>
-            <text x="90" y="262" fill="#C3CDD9" font-size="26">医療用品を数百点</text>
+            <rect class="box" x="60" y="140" width="330" height="230" rx="10" fill="#111825" stroke="#4A586B" stroke-width="2"/>
+            <g transform="translate(86,160)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h12l2-8H6.2"/></svg></g>
+            <text x="86" y="292" fill="#F2F4F7" font-size="30" font-weight="700">ご依頼内容</text>
+            <text x="86" y="336" fill="#C3CDD9" font-size="26">医療用品を数百点</text>
           </g>
           <g class="node" tabindex="0" data-name="決済の確認" data-tip="Shopify標準のカード決済は、規制のある医療機器などで事前審査が要る、または使えない場合があります。作り始める前に商品の種類ごとに確かめます。">
-            <rect class="box" x="460" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="490" y="212" fill="#F2F4F7" font-size="30" font-weight="700">① 決済の確認</text>
-            <text x="490" y="262" fill="#C3CDD9" font-size="26">商品ごとに先に</text>
+            <rect class="box" x="460" y="140" width="330" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(486,160)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg></g>
+            <text x="486" y="292" fill="#F2F4F7" font-size="30" font-weight="700">① 決済の確認</text>
+            <text x="486" y="336" fill="#C3CDD9" font-size="26">商品ごとに先に</text>
           </g>
           <g class="node" tabindex="0" data-name="表示の確認リスト" data-tip="販売の許可・届出の要否（高度管理医療機器は許可、管理医療機器は届出）、商品説明の効能の書き方など、制作前に確認すべき点を一覧にしてお渡しします。ご判断は御社です。">
-            <rect class="box" x="860" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="890" y="212" fill="#F2F4F7" font-size="30" font-weight="700">② 確認リスト</text>
-            <text x="890" y="262" fill="#C3CDD9" font-size="26">許可・届出・表現</text>
+            <rect class="box" x="860" y="140" width="330" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(886,160)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></g>
+            <text x="886" y="292" fill="#F2F4F7" font-size="30" font-weight="700">② 確認リスト</text>
+            <text x="886" y="336" fill="#C3CDD9" font-size="26">許可・届出・表現</text>
           </g>
           <g class="node" tabindex="0" data-name="分類の設計" data-tip="カテゴリと絞り込み（用途・サイズなど）を、商品が増えても崩れない形で設計します。">
-            <rect class="box" x="1260" y="140" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="1290" y="212" fill="#F2F4F7" font-size="30" font-weight="700">③ 分類の設計</text>
-            <text x="1290" y="262" fill="#C3CDD9" font-size="26">探しやすい分類</text>
+            <rect class="box" x="1260" y="140" width="330" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(1286,160)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></g>
+            <text x="1286" y="292" fill="#F2F4F7" font-size="30" font-weight="700">③ 分類の設計</text>
+            <text x="1286" y="336" fill="#C3CDD9" font-size="26">探しやすい分類</text>
           </g>
 
-          <!-- 下段4箱: y=560。人が見る場所（人の判断が残る箱）だけ stroke を #5FB894 にする -->
+          <!-- 下段4箱: y=660。人が見る場所（人の判断が残る箱）だけ stroke を #5FB894 にする -->
           <g class="node" tabindex="0" data-name="デザイン" data-tip="清潔感・信頼感を保ちつつ、堅くなりすぎないデザイン。スマートフォンで商品を確認しやすい配置にします。">
-            <rect class="box" x="60" y="560" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="90" y="632" fill="#F2F4F7" font-size="30" font-weight="700">④ デザイン</text>
-            <text x="90" y="682" fill="#C3CDD9" font-size="26">清潔感・スマホ</text>
+            <rect class="box" x="60" y="660" width="330" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(86,680)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3l3 3-9 9-3-3z"/><path d="M9 12c-3 0-5 2-5 5 0 2-1 3-2 4 4 0 8-1 9-4z"/></svg></g>
+            <text x="86" y="812" fill="#F2F4F7" font-size="30" font-weight="700">④ デザイン</text>
+            <text x="86" y="856" fill="#C3CDD9" font-size="26">清潔感・スマホ</text>
           </g>
           <g class="node" tabindex="0" data-name="商品の一括登録" data-tip="商品を表（CSV）で一括登録・一括更新できる仕組みを作り、ご用意いただいた商品データを登録します。価格変更も表で行えます。">
-            <rect class="box" x="460" y="560" width="330" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="490" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑤ 一括登録</text>
-            <text x="490" y="682" fill="#C3CDD9" font-size="26">表で数百点</text>
+            <rect class="box" x="460" y="660" width="330" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(486,680)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M10 4v16"/></svg></g>
+            <text x="486" y="812" fill="#F2F4F7" font-size="30" font-weight="700">⑤ 一括登録</text>
+            <text x="486" y="856" fill="#C3CDD9" font-size="26">表で数百点</text>
           </g>
           <g class="node" tabindex="0" data-name="御社のご確認" data-tip="商品情報・表示内容の最終判断は御社にお願いします。当方は確認リストで判断材料を揃えます。">
-            <rect class="box" x="860" y="560" width="330" height="170" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
-            <text x="890" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑥ 御社の確認</text>
-            <text x="890" y="682" fill="#C3CDD9" font-size="26">表示の最終判断</text>
+            <rect class="box" x="860" y="660" width="330" height="230" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
+            <g transform="translate(886,680)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></g>
+            <text x="886" y="812" fill="#F2F4F7" font-size="30" font-weight="700">⑥ 御社の確認</text>
+            <text x="886" y="856" fill="#C3CDD9" font-size="26">表示の最終判断</text>
           </g>
           <g class="node" tabindex="0" data-name="公開と運用" data-tip="公開後1か月は不具合対応と操作のご質問に対応します。商品追加・価格変更・在庫・注文の操作手順書をお渡しします。">
-            <rect class="box" x="1260" y="560" width="330" height="170" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
-            <text x="1290" y="632" fill="#F2F4F7" font-size="30" font-weight="700">⑦ 公開と運用</text>
-            <text x="1290" y="682" fill="#C3CDD9" font-size="26">手順書つき</text>
+            <rect class="box" x="1260" y="660" width="330" height="230" rx="10" fill="#111825" stroke="#5FB894" stroke-width="2.5"/>
+            <g transform="translate(1286,680)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2"/><path d="M9 15l-3-3c1-4 5-9 12-9 0 7-5 11-9 12z"/><circle cx="15" cy="9" r="1.5"/></svg></g>
+            <text x="1286" y="812" fill="#F2F4F7" font-size="30" font-weight="700">⑦ 公開と運用</text>
+            <text x="1286" y="856" fill="#C3CDD9" font-size="26">手順書つき</text>
           </g>
 
-          <path d="M394,225 L450,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M794,225 L850,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M1194,225 L1250,225" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M1425,314 L1425,420 L225,420 L225,548" fill="none" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M394,645 L450,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M794,645 L850,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
-          <path d="M1194,645 L1250,645" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M394,255 L450,255" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M794,255 L850,255" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1194,255 L1250,255" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1425,374 L1425,450 L225,450 L225,648" fill="none" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M394,775 L450,775" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M794,775 L850,775" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
+          <path d="M1194,775 L1250,775" stroke="#D4AF37" stroke-width="3" marker-end="url(#f1a)"/>
 
           <!-- 注記は、説明したい箱の直下に置く（離すと対応が読み取れない） -->
-          <text x="490" y="352" fill="#9AA7B4" font-size="24">※ 審査に通らない商品は、外部の決済サービスに切り替えます</text>
-          <text x="860" y="778" fill="#5FB894" font-size="24">緑の枠＝人が見る場所。判断は御社に残ります。</text>
+          <text x="460" y="416" fill="#9AA7B4" font-size="24">※ 審査に通らない商品は、外部の決済サービスに切り替えます</text>
+          <text x="860" y="942" fill="#5FB894" font-size="24">緑の枠＝人が見る場所。判断は御社に残ります。</text>
         </svg>
       </div>
     </div>
@@ -322,7 +335,7 @@
     <h3>図2　作り方を2つの案で比べて決めます</h3>
     <div class="figure">
       <div class="svg-holder">
-        <svg viewBox="0 0 1600 640" role="img" aria-label="運用のしやすさと将来の広がりの2点で、Shopifyで整える案と一から作る案を比べ、決済の確認結果で決める図">
+        <svg viewBox="0 0 1600 720" role="img" aria-label="運用のしやすさと将来の広がりの2点で、Shopifyで整える案と一から作る案を比べ、決済の確認結果で決める図">
           <defs>
             <marker id="f2a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
               <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
@@ -333,76 +346,81 @@
           </defs>
 
           <g class="node" tabindex="0" data-name="運用のしやすさ" data-tip="ご依頼文の「管理者側でできるだけ簡単に行える仕組み」への答えです。">
-            <rect class="box" x="60" y="70" width="420" height="200" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
-            <text x="90" y="128" fill="#D4AF37" font-size="27" font-weight="700">運用のしやすさ</text>
-            <text x="90" y="176" fill="#F2F4F7" font-size="24">商品・在庫・注文を</text>
-            <text x="90" y="214" fill="#F2F4F7" font-size="24">管理画面で簡単に</text>
+            <rect class="box" x="60" y="60" width="420" height="230" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
+            <g transform="translate(86,80)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></g>
+            <text x="86" y="212" fill="#D4AF37" font-size="28" font-weight="700">運用のしやすさ</text>
+            <text x="86" y="256" fill="#C3CDD9" font-size="23">商品・在庫・注文を管理画面で</text>
           </g>
           <g class="node" tabindex="0" data-name="将来の広がり" data-tip="ご依頼文の「将来的な商品数の増加」「段階的な開発」への答えです。">
-            <rect class="box" x="60" y="350" width="420" height="200" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
-            <text x="90" y="408" fill="#D4AF37" font-size="27" font-weight="700">将来の広がり</text>
-            <text x="90" y="456" fill="#F2F4F7" font-size="24">商品数の増加</text>
-            <text x="90" y="494" fill="#F2F4F7" font-size="24">段階的な機能追加</text>
+            <rect class="box" x="60" y="380" width="420" height="230" rx="10" fill="#111825" stroke="#8C7526" stroke-width="2"/>
+            <g transform="translate(86,400)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></g>
+            <text x="86" y="532" fill="#D4AF37" font-size="28" font-weight="700">将来の広がり</text>
+            <text x="86" y="576" fill="#C3CDD9" font-size="23">商品数の増加・機能の追加</text>
           </g>
           <g class="node" tabindex="0" data-name="Shopifyで整える" data-tip="在庫・注文・商品管理の画面が最初からあり、費用と期間を抑えられます。利用料は月3,650円から（年払い）。">
-            <rect class="box" x="620" y="70" width="380" height="200" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="650" y="128" fill="#F2F4F7" font-size="27" font-weight="700">Shopifyで整える</text>
-            <text x="650" y="166" fill="#C3CDD9" font-size="24">既製の仕組みを活用</text>
-            <text x="650" y="220" fill="#5FB894" font-size="24">管理画面が完成済み</text>
+            <rect class="box" x="620" y="60" width="380" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(646,80)"><rect x="0" y="0" width="92" height="92" rx="18" fill="#EEF2F6"/><g transform="translate(20,20) scale(2.166)"><path d="M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z" fill="#7AB55C"/></g></g>
+            <text x="646" y="212" fill="#F2F4F7" font-size="27" font-weight="700">Shopifyで整える</text>
+            <text x="646" y="256" fill="#5FB894" font-size="23">管理画面が完成済み</text>
           </g>
           <g class="node" tabindex="0" data-name="一から作る" data-tip="画面や機能を自由に作れますが、管理画面から作るため費用と期間が大きくなります。">
-            <rect class="box" x="620" y="350" width="380" height="200" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="650" y="408" fill="#F2F4F7" font-size="27" font-weight="700">一から作る</text>
-            <text x="650" y="446" fill="#C3CDD9" font-size="24">Webサービスとして自作</text>
-            <text x="650" y="500" fill="#F2F4F7" font-size="24">自由度は高いが費用増</text>
+            <rect class="box" x="620" y="380" width="380" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(646,400)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20V10l6-4 6 4v10"/><path d="M10 20v-5h4v5"/></svg></g>
+            <text x="646" y="532" fill="#F2F4F7" font-size="27" font-weight="700">一から作る</text>
+            <text x="646" y="576" fill="#C3CDD9" font-size="23">自由度は高いが費用増</text>
           </g>
           <g class="node" tabindex="0" data-name="決め方" data-tip="決済の審査で使えない商品が多い場合は、外部決済の組み合わせか、一から作る案を改めてご相談します。">
-            <rect class="box" x="1120" y="180" width="430" height="280" rx="10" fill="rgba(212,175,55,.06)" stroke="#D4AF37" stroke-width="2.5"/>
-            <text x="1150" y="248" fill="#D4AF37" font-size="27" font-weight="700">初回はShopifyを推奨</text>
-            <text x="1150" y="308" fill="#F2F4F7" font-size="24">決済の確認結果を見て</text>
-            <text x="1150" y="346" fill="#F2F4F7" font-size="24">御社と一緒に確定</text>
-            <text x="1150" y="400" fill="#C3CDD9" font-size="24">第1〜2週で確定</text>
+            <rect class="box" x="1120" y="175" width="430" height="320" rx="10" fill="rgba(212,175,55,.06)" stroke="#D4AF37" stroke-width="2.5"/>
+            <g transform="translate(1146,195)"><rect x="0" y="0" width="92" height="92" rx="18" fill="#EEF2F6"/><g transform="translate(20,20) scale(2.166)"><path d="M15.337 23.979l7.216-1.561s-2.604-17.613-2.625-17.73c-.018-.116-.114-.192-.211-.192s-1.929-.136-1.929-.136-1.275-1.274-1.439-1.411c-.045-.037-.075-.057-.121-.074l-.914 21.104h.023zM11.71 11.305s-.81-.424-1.774-.424c-1.447 0-1.504.906-1.504 1.141 0 1.232 3.24 1.715 3.24 4.629 0 2.295-1.44 3.76-3.406 3.76-2.354 0-3.54-1.465-3.54-1.465l.646-2.086s1.245 1.066 2.28 1.066c.675 0 .975-.545.975-.932 0-1.619-2.654-1.694-2.654-4.359-.034-2.237 1.571-4.416 4.827-4.416 1.257 0 1.875.361 1.875.361l-.945 2.715-.02.01zM11.17.83c.136 0 .271.038.405.135-.984.465-2.064 1.639-2.508 3.992-.656.213-1.293.405-1.889.578C7.697 3.75 8.951.84 11.17.84V.83zm1.235 2.949v.135c-.754.232-1.583.484-2.394.736.466-1.777 1.333-2.645 2.085-2.971.193.501.309 1.176.309 2.1zm.539-2.234c.694.074 1.141.867 1.429 1.755-.349.114-.735.231-1.158.366v-.252c0-.752-.096-1.371-.271-1.871v.002zm2.992 1.289c-.02 0-.06.021-.078.021s-.289.075-.714.21c-.423-1.233-1.176-2.37-2.508-2.37h-.115C12.135.209 11.669 0 11.265 0 8.159 0 6.675 3.877 6.21 5.846c-1.194.365-2.063.636-2.16.674-.675.213-.694.232-.772.87-.075.462-1.83 14.063-1.83 14.063L15.009 24l.927-21.166z" fill="#7AB55C"/></g></g>
+            <text x="1146" y="330" fill="#D4AF37" font-size="27" font-weight="700">初回はShopifyを推奨</text>
+            <text x="1146" y="374" fill="#F2F4F7" font-size="23">決済の確認結果で御社と確定</text>
+            <text x="1146" y="418" fill="#C3CDD9" font-size="23">第2週までに確定</text>
           </g>
 
-          <path d="M486,155 L610,155" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
-          <path d="M486,465 L610,465" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
-          <path d="M486,225 L610,400" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
-          <path d="M486,400 L610,225" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
-          <path d="M1006,180 L1110,262" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
-          <path d="M1006,440 L1110,380" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
-          <text x="60" y="610" fill="#9AA7B4" font-size="24">点線＝比較のために、もう一方の案にも当てて確かめます</text>
+          <path d="M486,175 L610,175" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M486,495 L610,495" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M486,250 L610,420" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
+          <path d="M486,420 L610,250" stroke="#6C7A8C" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#f2b)"/>
+          <path d="M1006,175 L1110,280" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <path d="M1006,495 L1110,400" stroke="#D4AF37" stroke-width="3" marker-end="url(#f2a)"/>
+          <!-- 注記は図の下へ1行（点線と重ねない＝2026-09-17 実測で重なった） -->
+          <text x="80" y="680" fill="#9AA7B4" font-size="24">点線＝比較のために、もう一方の案にも当てて確かめます。</text>
         </svg>
       </div>
     </div>
   </section>
 
-  <!-- ③ 図3＝入る／難しい／別途 の3層。ここが194件の中での差別化になる -->
+  <!-- ③ 図3＝入る／難しい／別途 の3層 -->
   <section id="ch3">
     <h2><span class="step">&#9314;</span>350,000円の中身</h2>
 
     <h3>図3　入る／難しい／別途</h3>
     <div class="figure">
       <div class="svg-holder">
-        <svg viewBox="0 0 1600 660" role="img" aria-label="350,000円で入る範囲、実測が必要な難しい範囲、別途になる範囲の3層を示した図">
+        <svg viewBox="0 0 1600 800" role="img" aria-label="350,000円で入る範囲、難しい範囲、別途になる範囲の3層を示した図">
           <g class="node" tabindex="0" data-name="入る範囲（350,000円）" data-tip="決済の確認と設定／表示の確認リスト／カテゴリと絞り込み検索の設計／清潔感のあるデザイン（スマホ対応）／商品の一括登録の仕組みと、ご用意いただいた商品データの登録／特定商取引法・プライバシーポリシー等のページ枠／操作手順書／公開後1か月の不具合対応とご質問対応">
-            <rect class="box" x="60" y="50" width="1480" height="180" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="3"/>
-            <text x="100" y="118" fill="#D4AF37" font-size="32" font-weight="700">入る範囲</text>
-            <text x="100" y="172" fill="#F2F4F7" font-size="24">決済の確認／確認リスト／カテゴリと絞り込み検索／デザイン</text>
-            <text x="100" y="208" fill="#F2F4F7" font-size="24">商品の一括登録と数百点の登録／操作手順書／公開後1か月の対応</text>
-            <text x="1210" y="118" fill="#D4AF37" font-size="28" font-weight="700">350,000円</text>
-            <text x="1140" y="208" fill="#5FB894" font-size="24">ご満足いただけなければ全額返金</text>
+            <rect class="box" x="60" y="40" width="1480" height="250" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="3"/>
+            <g transform="translate(96,66)"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></g>
+            <text x="180" y="112" fill="#D4AF37" font-size="34" font-weight="700">入る範囲</text>
+            <text x="96" y="170" fill="#F2F4F7" font-size="24">決済の確認／確認リスト／カテゴリと絞り込み検索／デザイン</text>
+            <text x="96" y="212" fill="#F2F4F7" font-size="24">商品の一括登録と数百点の登録／操作手順書／公開後1か月の対応</text>
+            <text x="1180" y="112" fill="#D4AF37" font-size="30" font-weight="700">350,000円</text>
+            <text x="96" y="256" fill="#5FB894" font-size="24">ご満足いただけなければ全額返金いたします。</text>
           </g>
           <g class="node" tabindex="0" data-name="難しい範囲" data-tip="決済の審査は決済会社が、表示内容の法的なご判断は御社（必要に応じて専門家）が行うため、当方だけでは確定できません。当方は確認すべき点を制作前に漏れなく並べます。">
-            <rect class="box" x="60" y="270" width="1480" height="160" rx="10" fill="rgba(224,114,74,.08)" stroke="#E0724A" stroke-width="3"/>
-            <text x="100" y="338" fill="#E0724A" font-size="32" font-weight="700">難しい範囲</text>
-            <text x="100" y="392" fill="#F2F4F7" font-size="24">決済審査の結果（決済会社が判断）／表示内容の法的な最終判断</text>
-            <text x="1090" y="338" fill="#E0724A" font-size="24" font-weight="700">制作前に確認リストで共有</text>
+            <rect class="box" x="60" y="330" width="1480" height="200" rx="10" fill="rgba(224,114,74,.08)" stroke="#E0724A" stroke-width="3"/>
+            <g transform="translate(96,356)"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"/><path d="M12 10v4"/><path d="M12 17h.01"/></svg></g>
+            <text x="180" y="402" fill="#E0724A" font-size="34" font-weight="700">難しい範囲</text>
+            <text x="96" y="460" fill="#F2F4F7" font-size="24">決済審査の結果（決済会社が判断）／表示内容の法的な最終判断</text>
+            <text x="980" y="402" fill="#E0724A" font-size="24" font-weight="700">制作前に確認リストで共有します</text>
           </g>
           <g class="node" tabindex="0" data-name="別途になる範囲" data-tip="撮影・原稿・広告・2か月目以降の保守はご相談のうえお見積りします。許可・届出の申請は制作側の対象外です。">
-            <rect class="box" x="60" y="470" width="1480" height="150" rx="10" fill="#111825" stroke="#4A586B" stroke-width="2.5"/>
-            <text x="100" y="522" fill="#9AA7B4" font-size="32" font-weight="700">別途になる範囲</text>
-            <text x="100" y="564" fill="#F2F4F7" font-size="24">商品写真の撮影／商品説明文の作成／広告運用／2か月目以降の保守</text>
-            <text x="100" y="600" fill="#9AA7B4" font-size="24">販売の許可・届出の申請手続き</text>
+            <rect class="box" x="60" y="570" width="1480" height="200" rx="10" fill="#111825" stroke="#4A586B" stroke-width="3"/>
+            <g transform="translate(96,596)"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></g>
+            <text x="180" y="642" fill="#9AA7B4" font-size="34" font-weight="700">別途になる範囲</text>
+            <text x="96" y="700" fill="#F2F4F7" font-size="24">商品写真の撮影／商品説明文の作成／広告運用／2か月目以降の保守</text>
+            <text x="96" y="742" fill="#9AA7B4" font-size="23">販売の許可・届出の申請手続き（御社でのお手続き）</text>
+            <text x="980" y="642" fill="#C3CDD9" font-size="24" font-weight="700">ご相談のうえお見積りします</text>
           </g>
         </svg>
       </div>
@@ -412,7 +430,7 @@
       <h3><span class="tag">費用</span>月々の費用（御社のご負担）</h3>
       <p>
         Shopifyの利用料は御社のご契約です（Basic：年払い 月3,650円／月払い 月4,850円・カード手数料は公式料金ページのとおり）。<br>
-        <b>外部の決済サービスを使う場合の手数料は、決済の確認後に数字でお伝えします。</b>
+        <b>外部の決済サービスを使う場合の手数料は、第2週の決済の確認後に数字でお伝えします。</b>
       </p>
     </div>
   </section>
@@ -424,35 +442,37 @@
     <h3>図4　約6週間の進み方</h3>
     <div class="figure">
       <div class="svg-holder">
-        <svg viewBox="0 0 1600 480" role="img" aria-label="約6週間を3つに分け、最初の区切りで一度判断いただけることを示した図">
+        <svg viewBox="0 0 1600 620" role="img" aria-label="約6週間を3つに分け、最初の区切りで一度判断いただけることを示した図">
           <defs>
             <marker id="f4a" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
               <path d="M0,0 L9,4 L0,8 Z" fill="#D4AF37"/>
             </marker>
           </defs>
-          <g class="node" tabindex="0" data-name="第1〜2週" data-tip="決済の確認結果と、分類・画面の設計をお見せします。">
-            <rect class="box" x="60" y="90" width="480" height="170" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="2.5"/>
-            <text x="90" y="152" fill="#D4AF37" font-size="27" font-weight="700">第1〜2週</text>
-            <text x="90" y="200" fill="#F2F4F7" font-size="24">決済の確認・分類の設計</text>
+          <g class="node" tabindex="0" data-name="第1〜2週" data-tip="第2週に、決済の確認結果と分類・画面の設計をお見せします。">
+            <rect class="box" x="60" y="60" width="480" height="230" rx="10" fill="rgba(212,175,55,.09)" stroke="#D4AF37" stroke-width="2.5"/>
+            <g transform="translate(86,80)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.3-4.3"/></svg></g>
+            <text x="86" y="212" fill="#D4AF37" font-size="30" font-weight="700">第1〜2週</text>
+            <text x="86" y="256" fill="#C3CDD9" font-size="24">決済の確認・分類の設計</text>
           </g>
-          <g class="node" tabindex="0" data-name="第3〜4週" data-tip="デザインを作り、商品データを一括登録します。">
-            <rect class="box" x="560" y="90" width="480" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="590" y="152" fill="#F2F4F7" font-size="27" font-weight="700">第3〜4週</text>
-            <text x="590" y="200" fill="#F2F4F7" font-size="24">デザイン・一括登録</text>
+          <g class="node" tabindex="0" data-name="第3〜4週" data-tip="第4週に、デザインを当てて商品を登録した画面をお見せします。">
+            <rect class="box" x="560" y="60" width="480" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(586,80)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3l3 3-9 9-3-3z"/><path d="M9 12c-3 0-5 2-5 5 0 2-1 3-2 4 4 0 8-1 9-4z"/></svg></g>
+            <text x="586" y="212" fill="#F2F4F7" font-size="30" font-weight="700">第3〜4週</text>
+            <text x="586" y="256" fill="#C3CDD9" font-size="24">デザイン・一括登録</text>
           </g>
-          <g class="node" tabindex="0" data-name="第5〜6週" data-tip="購入の流れを試験し、公開して操作手順書をお渡しします。">
-            <rect class="box" x="1060" y="90" width="480" height="170" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
-            <text x="1090" y="152" fill="#F2F4F7" font-size="27" font-weight="700">第5〜6週</text>
-            <text x="1090" y="200" fill="#F2F4F7" font-size="24">試験・公開・手順書</text>
+          <g class="node" tabindex="0" data-name="第5〜6週" data-tip="第6週に、スマートフォンでの購入試験の結果をお見せしてから公開し、操作手順書をお渡しします。">
+            <rect class="box" x="1060" y="60" width="480" height="230" rx="10" fill="#1B2333" stroke="#D4AF37" stroke-width="2"/>
+            <g transform="translate(1086,80)"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l2-7h14l2 7"/><path d="M12 10V4"/><path d="M8 4h8"/><path d="M3 20h18"/></svg></g>
+            <text x="1086" y="212" fill="#F2F4F7" font-size="30" font-weight="700">第5〜6週</text>
+            <text x="1086" y="256" fill="#C3CDD9" font-size="24">購入試験・公開・手順書</text>
           </g>
-
           <path d="M544,175 L552,175" stroke="#D4AF37" stroke-width="3" marker-end="url(#f4a)"/>
           <path d="M1044,175 L1052,175" stroke="#D4AF37" stroke-width="3" marker-end="url(#f4a)"/>
-
-          <path d="M300,268 L300,300" stroke="#5FB894" stroke-width="3"/>
-          <path d="M288,300 L312,300 L300,322 Z" fill="#5FB894"/>
-          <text x="90" y="378" fill="#5FB894" font-size="24" font-weight="700">ここで一度ご判断いただけます</text>
-          <text x="90" y="420" fill="#F2F4F7" font-size="24">決済の確認と設計をご覧いただき、ここでお止めいただく場合は全額返金いたします。</text>
+          <path d="M300,298 L300,336" stroke="#5FB894" stroke-width="3"/>
+          <path d="M286,336 L314,336 L300,362 Z" fill="#5FB894"/>
+          <text x="90" y="428" fill="#5FB894" font-size="26" font-weight="700">ここで一度ご判断いただけます</text>
+          <text x="90" y="474" fill="#F2F4F7" font-size="24">決済の確認と設計をご覧いただき、この時点でお止めいただいて構いません。</text>
+          <text x="90" y="516" fill="#5FB894" font-size="24">ご満足いただけなければ全額返金いたします。</text>
         </svg>
       </div>
     </div>
@@ -461,7 +481,7 @@
       <table>
         <thead><tr><th>項目</th><th>内容</th></tr></thead>
         <tbody>
-          <tr><td>進め方</td><td><b>毎週、動くものをお見せします。</b></td></tr>
+          <tr><td>途中の確認</td><td>第2週に決済の確認結果と画面の設計、第4週に商品を登録した画面、第6週に公開前の購入試験の結果をお見せし、その都度ご確認いただきます。</td></tr>
           <tr><td>修正対応</td><td>検収期間中の不具合修正は無償です。仕様の変更・追加は別途お見積りします。</td></tr>
           <tr><td>秘密保持</td><td>お預かりする商品データと管理画面の権限は、本件以外に使いません。ご希望があれば秘密保持契約を結びます。</td></tr>
           <tr><td>引渡し</td><td>公開済みのショップ一式（御社名義のアカウント）／一括登録用の表の型／操作手順書／確認リスト</td></tr>
